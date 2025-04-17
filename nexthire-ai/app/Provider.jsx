@@ -1,9 +1,12 @@
 "use client"
 import { supabase } from '@/services/supabaseClient'
-import React, { useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
+import { UserDetailContext } from './context/UserDetailContext'
 
 function Provider({ children }) {
 
+
+    const [user,setUser] = useState();
     useEffect(()=>{
         CreateNewUser();
     },[])
@@ -29,18 +32,26 @@ function Provider({ children }) {
                     },
                 ])
                 console.log(data);
-                
+                setUser(data);
+                return;
 
             }
+
+            setUser(Users);
         })
     }
     return (
-        <div>
-
-            {children}
-
-        </div>
+        <UserDetailContext.Provider value={{user, setUser}}>
+            <div>
+                {children}
+            </div>
+        </UserDetailContext.Provider>
     )
 }
 
 export default Provider;
+
+export const useUser = () => {
+    const context = useContext(UserDetailContext);
+    return context;
+}
