@@ -35,10 +35,10 @@ export function AppSidebar() {
                         <SidebarMenu>
                             {SideBarOptions.map((option, index) => (
                                 <SidebarMenuItem key={index} className='p-1'>
-                                    <SidebarMenuButton asChild className='p-5'>
+                                    <SidebarMenuButton asChild className={`p-5 ${path==option.path&& 'bg-blue-50'}`}>
                                         <Link href={option.path}>
-                                            <option.icon />
-                                            <span className="text-[18px]">{option.name}</span>
+                                            <option.icon className={` ${path==option.path&& 'text-primary'}`}/>
+                                            <span className={`text-[18px] font-medium ${path==option.path&& 'text-primary'}`}>{option.name}</span>
                                         </Link>
                                     </SidebarMenuButton>
                                 </SidebarMenuItem>

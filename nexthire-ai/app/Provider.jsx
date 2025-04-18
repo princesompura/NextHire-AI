@@ -1,7 +1,8 @@
 "use client"
+import { UserDetailContext } from '@/context/UserDetailContext';
 import { supabase } from '@/services/supabaseClient'
 import React, { useContext, useEffect, useState } from 'react'
-import { UserDetailContext } from './context/UserDetailContext'
+
 
 function Provider({ children }) {
 
@@ -12,34 +13,39 @@ function Provider({ children }) {
     },[])
 
     const CreateNewUser = () => {
+        supabase.auth.getUser().then(async ({ data: { user }, error }) => {
+            console.log("Fetched user:", user); // Debugging log
+            if (!user) {
+                console.error("No user found. Please sign in.");
+                return;
+            }
 
-        supabase.auth.getUser().then(async ({ data: { user } }) => {
-            //Check if user already exist
-            let { data: Users, error } = await supabase
-                .from('Users')
+            // Check if user already exists
+            let { data: Users, error: fetchError } = await supabase
+                .from("Users")
                 .select("*")
-                .eq('email', user?.email);
+                .eq("email", user?.email);
 
-            console.log(Users)
+            console.log("Users from database:", Users);
 
-            //If not create a new user in the database
-            if (Users?.length == 0) {
-                const { data, error } = await supabase.from('Users').insert([
+            // If not, create a new user in the database
+            if (Users?.length === 0) {
+                const { data, error: insertError } = await supabase.from("Users").insert([
                     {
                         name: user?.user_metadata?.full_name,
                         email: user?.email,
                         picture: user?.user_metadata?.picture,
                     },
-                ])
-                console.log(data);
-                setUser(data);
+                ]);
+                console.log("Inserted user:", data);
+                setUser(data?.[0]); // Set the newly created user as an object
                 return;
-
             }
 
-            setUser(Users);
-        })
+            setUser(Users?.[0]); // Set the existing user as an object
+        });
     }
+
     return (
         <UserDetailContext.Provider value={{user, setUser}}>
             <div>
