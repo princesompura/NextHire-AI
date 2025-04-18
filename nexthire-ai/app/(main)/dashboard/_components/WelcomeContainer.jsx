@@ -8,7 +8,7 @@ function WelcomeContainer() {
     console.log("User in WelcomeContainer:", user); // Debugging log
 
     return (
-        <div className='bg-blue-50 p-5 rounded-xl w-full flex justify-between items-center  shadow-lg'>
+        <div className='bg-blue-50 p-5 rounded-xl w-full flex justify-between items-center shadow-lg'>
             <div>
                 <h2 className='text-lg font-bold'> Welcome Back, {user?.name || "Guest"} </h2>
                 <h2 className='text-gray-500'>AI-Driven Interviews, Hassel-Free Hiring</h2>

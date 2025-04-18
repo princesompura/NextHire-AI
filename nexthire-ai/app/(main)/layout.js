@@ -3,7 +3,7 @@ import DashboardProvider from './Provider'
 
 function DashboardLayout({ children }) {
     return (
-        <div>
+        <div >
             <DashboardProvider>
                 <div className='p-10'>
                 {children}
