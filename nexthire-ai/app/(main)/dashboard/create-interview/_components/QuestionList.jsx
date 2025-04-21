@@ -1,7 +1,9 @@
+import { Button } from '@/components/ui/button';
 import axios from 'axios';
 import { Loader2Icon } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'sonner';
+import QuestionListContainer from './QuestionListContainer';
 
 function QuestionList({ formData }) {
     const [loading, setLoading] = useState(true);
@@ -9,23 +11,23 @@ function QuestionList({ formData }) {
 
     useEffect(() => {
         if (formData) {
-            GeneratQuestionList();
+            //GeneratQuestionList();
         }
     }, [formData]);
 
     const GeneratQuestionList = async () => {
-        
+
         setLoading(true);
         try {
             const { data } = await axios.post('/api/ai-model', { ...formData });
             const match = data.content.match(/interviewQuestions\s*=\s*(\[[\s\S]*?\])/);
-    
+
             if (!match) {
                 toast('Could not find valid questions in response.');
                 setLoading(false);
                 return;
             }
-    
+
             setQuestionList(JSON.parse(match[1])); // Directly parse and set
             setLoading(false);
         } catch (e) {
@@ -33,8 +35,12 @@ function QuestionList({ formData }) {
             setLoading(false);
         }
     };
-    
-    
+
+    const onFinish = () => {
+
+    }
+
+
     return (
         <div>
             {loading &&
@@ -47,15 +53,14 @@ function QuestionList({ formData }) {
                 </div>
             }
             {questionList?.length > 0 &&
-                <div className='p-5 border border-gray-300 rounded-xl'>
-                    {questionList.map((item, index) => (
-                        <div key={index} className='p-3 border border-gray-200 rounded-xl'>
-                            <h2 className='font-medium'>{item.question}</h2>
-                            <h2>Type: {item?.type}</h2>
-                        </div>
-                    ))}
+                <div>
+                    <QuestionListContainer questionList={questionList} />
                 </div>
             }
+
+            <div className='flex justify-end mt-10'>
+                <Button onClick={() => onFinish()}>Finish</Button>
+            </div>
         </div>
     );
 }
