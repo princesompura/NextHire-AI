@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import axios from 'axios';
-import { Loader2Icon } from 'lucide-react';
+import { Loader2, Loader2Icon } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import QuestionListContainer from './QuestionListContainer';
@@ -13,6 +13,7 @@ function QuestionList({ formData }) {
     const [loading, setLoading] = useState(true);
     const [questionList, setQuestionList] = useState();
     const { user } = useUser();
+    const [saveLoading, setSaveLoading] = useState(false);
 
     useEffect(() => {
         if (formData) {
@@ -42,6 +43,7 @@ function QuestionList({ formData }) {
     };
 
     const onFinish = async () => {
+        setSaveLoading(true);
         const interview_id = uuidv4();
         const { data, error } = await supabase
             .from('Interviews')
@@ -54,15 +56,8 @@ function QuestionList({ formData }) {
                 },
             ])
             .select()
-
-        console.log({
-            ...formData,
-            questionList: questionList,
-            userEmail: user?.email,
-            interview_id: interview_id,
-        });
-
-        console.log(data);
+        setSaveLoading(false);
+        
 
     }
 
@@ -85,7 +80,9 @@ function QuestionList({ formData }) {
             }
 
             <div className='flex justify-end mt-10'>
-                <Button onClick={() => onFinish()}>Finish</Button>
+                <Button onClick={() => onFinish()} disabled={saveLoading}>
+                    {saveLoading&&<Loader2 className='animate-spin'/>}
+                    Finish</Button>
             </div>
         </div>
     );
