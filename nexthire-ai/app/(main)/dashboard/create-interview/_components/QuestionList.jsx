@@ -4,10 +4,15 @@ import { Loader2Icon } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import QuestionListContainer from './QuestionListContainer';
+import { supabase } from '@/services/supabaseClient';
+import { useUser } from '@/app/Provider';
+import { v4 as uuidv4 } from 'uuid';
+
 
 function QuestionList({ formData }) {
     const [loading, setLoading] = useState(true);
     const [questionList, setQuestionList] = useState();
+    const { user } = useUser();
 
     useEffect(() => {
         if (formData) {
@@ -36,7 +41,28 @@ function QuestionList({ formData }) {
         }
     };
 
-    const onFinish = () => {
+    const onFinish = async () => {
+        const interview_id = uuidv4();
+        const { data, error } = await supabase
+            .from('Interviews')
+            .insert([
+                {
+                    ...formData,
+                    questionList: questionList,
+                    userEmail: user?.email,
+                    interview_id: interview_id
+                },
+            ])
+            .select()
+
+        console.log({
+            ...formData,
+            questionList: questionList,
+            userEmail: user?.email,
+            interview_id: interview_id,
+        });
+
+        console.log(data);
 
     }
 
