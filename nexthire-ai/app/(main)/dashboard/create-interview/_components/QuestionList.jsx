@@ -11,7 +11,7 @@ function QuestionList({ formData }) {
 
     useEffect(() => {
         if (formData) {
-            //GeneratQuestionList();
+            GeneratQuestionList();
         }
     }, [formData]);
 
