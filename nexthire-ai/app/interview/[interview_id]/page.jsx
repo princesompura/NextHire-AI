@@ -1,13 +1,14 @@
 "use client"
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import InterviewHeader from '../_components/InterviewHeader'
 import Image from 'next/image'
-import { Clock, Info, Video } from 'lucide-react'
+import { Clock, Info, Loader2Icon, Video } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { supabase } from '@/services/supabaseClient'
 import { toast } from 'sonner'
+import { InterviewDataContext } from '@/context/InterviewDataContext'
 
 function Interview() {
 
@@ -16,6 +17,9 @@ function Interview() {
     const [interviewData, setInterviewData] = useState();
     const [userName, setUserName] = useState();
     const [loading, setLoading] = useState(false);
+    const { interviewInfo, setInterviewInfo } = useContext(InterviewDataContext);
+    const router = useRouter();
+
 
     useEffect(() => {
         interview_id && GetInterviewDetails();
@@ -30,18 +34,33 @@ function Interview() {
                 .eq('interview_id', interview_id)
             setInterviewData(Interviews[0]);
             setLoading(false);
-            if(Interviews?.length==0)
-            {
+            if (Interviews?.length == 0) {
                 toast('Incorrect Interview Link')
-                return ;
+
+                return;
             }
-            
         }
-        catch(e){
+        catch (e) {
             setLoading(false);
             toast('Incorrect Interview Link')
         }
-            
+    }
+
+    const onJoinInterview = async () => {
+        setLoading(true);
+        let { data: Interviews, error } = await supabase
+            .from('Interviews')
+            .select('*')
+            .eq('interview_id', interview_id)
+
+        console.log(Interviews[0]);
+        setInterviewInfo({
+            userName: userName,
+            interviewData: Interview[0]
+        });
+        router.push('/interview/' + interview_id + '/start')
+        setLoading(false);
+
     }
 
     return (
@@ -62,7 +81,7 @@ function Interview() {
 
                 <div className='w-full mt-2'>
                     <h2>Enter your full name</h2>
-                    <Input placeholder='e.g. Virat Kohli' className='mt-1' />
+                    <Input placeholder='e.g. Virat Kohli' className='mt-1' onChange={(event) => setUserName(event.target.value)} />
                 </div>
                 <div className='p-3 bg-blue-50 flex gap-4 rounded-lg mt-5'>
                     <Info className='text-primary' />
@@ -76,7 +95,11 @@ function Interview() {
                     </div>
                 </div>
 
-                <Button className={'mt-5 w-full font-bold'}><Video />Join Interview</Button>
+                <Button className={'mt-5 w-full font-bold'}
+                    disabled={loading || !userName}
+                    onClick={() => onJoinInterview()}
+                >
+                    <Video /> {loading && <Loader2Icon />}Join Interview</Button>
             </div>
         </div>
     )
