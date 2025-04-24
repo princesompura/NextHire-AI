@@ -1,11 +1,17 @@
 "use client"
 import { InterviewDataContext } from '@/context/InterviewDataContext'
-import { Timer, TimerIcon } from 'lucide-react'
+import { Mic, Phone, Timer, TimerIcon } from 'lucide-react'
 import Image from 'next/image'
 import React, { useContext } from 'react'
+import Vapi from "@vapi-ai/web";
+
 
 function StartInterview() {
   const { interviewInfo, setInterviewInfo } = useContext(InterviewDataContext)
+  const vapi = new Vapi(process.env.NEXT_PUBIC_VAPI_PUBLIC_KEY);
+
+
+
   return (
     <div className='p-20 lg:pc-48 xl:px-56'>
       <h2 className='font-bold text-xl flex justify-between'>AI Interview Session
@@ -34,6 +40,13 @@ function StartInterview() {
           </h2>
         </div>
       </div>
+      <div className='flex items-center gap-5 justify-center mt-7'>
+        <Mic className='h-12 w-12 p-3 bg-gray-500 text-white rounded-full cursor-pointer'/>
+        <Phone className='h-12 w-12 p-3 bg-red-500 text-white rounded-full cursor-pointer'/>
+      </div>
+      <h2 className='text-sm text-gray-400 text-center mt-4'>
+        Interview is in Progress...
+      </h2>
     </div>
   )
 }
