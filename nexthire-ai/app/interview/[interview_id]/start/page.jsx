@@ -71,7 +71,7 @@ Key Guidelines:
 
     vapi.start(assistantOptions)
 
-  }
+  };
 
   const stopInterview=()=>{
     vapi.stop()
