@@ -4,22 +4,13 @@ import { Mic, Phone, Timer, TimerIcon } from 'lucide-react'
 import Image from 'next/image'
 import React, { useContext, useEffect } from 'react'
 import Vapi from "@vapi-ai/web";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
+import AlertConfirmation from '../_components/AlertConfirmation'
+
 
 
 function StartInterview() {
   const { interviewInfo, setInterviewInfo } = useContext(InterviewDataContext)
-  const vapi = new Vapi(process.env.NEXT_PUBIC_VAPI_PUBLIC_KEY);
+  const vapi = new Vapi(process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY);
 
   useEffect(() => {
     interviewInfo && startCall();
@@ -45,8 +36,8 @@ function StartInterview() {
         voiceId: "jennifer",
       },
       model: {
-        provider: "openrouter",
-        model: "nvidia/llama-3.3-nemotron-super-49b-v1:free",
+        provider: "openai",
+        model: "gpt-4",
         messages: [
           {
             role: "system",
@@ -82,6 +73,10 @@ Key Guidelines:
 
   }
 
+  const stopInterview=()=>{
+    vapi.stop()
+  }
+
 
   return (
     <div className='p-20 lg:pc-48 xl:px-56'>
@@ -113,7 +108,10 @@ Key Guidelines:
       </div>
       <div className='flex items-center gap-5 justify-center mt-7'>
         <Mic className='h-12 w-12 p-3 bg-gray-500 text-white rounded-full cursor-pointer' />
+        <AlertConfirmation stopInterview={()=>stopInterview()}>
         <Phone className='h-12 w-12 p-3 bg-red-500 text-white rounded-full cursor-pointer' />
+        </AlertConfirmation>
+        
       </div>
       <h2 className='text-sm text-gray-400 text-center mt-4'>
         Interview is in Progress...
