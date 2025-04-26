@@ -73,7 +73,7 @@ Key Guidelines:
 
   };
 
-  const stopInterview=()=>{
+  const stopInterview = () => {
     vapi.stop()
   }
 
@@ -108,10 +108,10 @@ Key Guidelines:
       </div>
       <div className='flex items-center gap-5 justify-center mt-7'>
         <Mic className='h-12 w-12 p-3 bg-gray-500 text-white rounded-full cursor-pointer' />
-        <AlertConfirmation stopInterview={()=>stopInterview()}>
-        <Phone className='h-12 w-12 p-3 bg-red-500 text-white rounded-full cursor-pointer' />
+        <AlertConfirmation stopInterview={() => stopInterview()}>
+          <Phone className='h-12 w-12 p-3 bg-red-500 text-white rounded-full cursor-pointer' />
         </AlertConfirmation>
-        
+
       </div>
       <h2 className='text-sm text-gray-400 text-center mt-4'>
         Interview is in Progress...
