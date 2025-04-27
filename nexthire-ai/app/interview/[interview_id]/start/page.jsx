@@ -2,15 +2,17 @@
 import { InterviewDataContext } from '@/context/InterviewDataContext'
 import { Mic, Phone, Timer, TimerIcon } from 'lucide-react'
 import Image from 'next/image'
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Vapi from "@vapi-ai/web";
 import AlertConfirmation from '../_components/AlertConfirmation'
+import { toast } from 'sonner'
 
 
 
 function StartInterview() {
   const { interviewInfo, setInterviewInfo } = useContext(InterviewDataContext)
   const vapi = new Vapi(process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY);
+  const [activeUser, setActiveUser] = useState(false)
 
   useEffect(() => {
     interviewInfo && startCall();
@@ -75,7 +77,29 @@ Key Guidelines:
 
   const stopInterview = () => {
     vapi.stop()
+    toast('Call Connected...')
   }
+
+  vapi.on("call-start", () => {
+    console.log("Call has started.");
+  });
+
+
+  vapi.on("speech-start", () => {
+    console.log("Assistant speech has started.");
+    setActiveUser(false);
+  });
+
+  vapi.on("speech-end", () => {
+    console.log("Assistant speech has ended.");
+    setActiveUser(true);
+  });
+
+  vapi.on("call-end", () => {
+    console.log("Call has ended.");
+    toast('Interview Ended...')
+  });
+
 
 
   return (
@@ -89,11 +113,14 @@ Key Guidelines:
 
       <div className='grid grid-cols-1 md:grid-cols-2 gap-7 mt-5'>
         <div className='bg-white h-[400px] rounded-lg border flex flex-col gap-3 items-center justify-center'>
-          <Image src={'/ai.png'} alt='ai'
-            width={100}
-            height={100}
-            className='w-[60px] h-[60px] rounded-full object-cover'
-          />
+          <div className='relative'>
+            <span className='absolute inset-0 rounded-full bg-blue-500 opacity-75 animate-ping' />
+            <Image src={'/ai.png'} alt='ai'
+              width={100}
+              height={100}
+              className='w-[60px] h-[60px] rounded-full object-cover'
+            />
+          </div>
           <h2>AI Recruiter</h2>
         </div>
 
