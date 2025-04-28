@@ -5,6 +5,7 @@ import Image from 'next/image'
 import React, { useContext, useEffect, useState } from 'react'
 import Vapi from "@vapi-ai/web";
 import AlertConfirmation from '../_components/AlertConfirmation'
+import TimerComponent from '../_components/TimerComponent'
 import { toast } from 'sonner'
 
 
@@ -13,6 +14,8 @@ function StartInterview() {
   const { interviewInfo, setInterviewInfo } = useContext(InterviewDataContext)
   const vapi = new Vapi(process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY);
   const [activeUser, setActiveUser] = useState(false)
+  const [interviewStarted, setInterviewStarted] = useState(false); // <-- New
+  const [interviewEnded, setInterviewEnded] = useState(false); // <-- New
 
   useEffect(() => {
     interviewInfo && startCall();
@@ -78,10 +81,12 @@ Key Guidelines:
   const stopInterview = () => {
     vapi.stop()
     toast('Call Connected...')
+    setInterviewEnded(true);
   }
 
   vapi.on("call-start", () => {
     console.log("Call has started.");
+    setInterviewStarted(true);
   });
 
 
@@ -98,6 +103,7 @@ Key Guidelines:
   vapi.on("call-end", () => {
     console.log("Call has ended.");
     toast('Interview Ended...')
+    setInterviewEnded(true);
   });
 
 
@@ -106,8 +112,8 @@ Key Guidelines:
     <div className='p-20 lg:pc-48 xl:px-56'>
       <h2 className='font-bold text-xl flex justify-between'>AI Interview Session
         <span className='flex gap-2 items-center'>
-          <Timer />
-          00:00:00
+          <Timer className='h-5 w-5 text-gray-500' />
+        <TimerComponent start={interviewStarted} stop={interviewEnded} />
         </span>
       </h2>
 
