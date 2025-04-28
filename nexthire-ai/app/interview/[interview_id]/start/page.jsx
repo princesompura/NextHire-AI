@@ -4,8 +4,8 @@ import { Mic, Phone, Timer, TimerIcon } from 'lucide-react'
 import Image from 'next/image'
 import React, { useContext, useEffect, useState } from 'react'
 import Vapi from "@vapi-ai/web";
-import AlertConfirmation from '../_components/AlertConfirmation'
-import TimerComponent from '../_components/TimerComponent'
+import AlertConfirmation from './_components/AlertConfirmation'
+import TimerComponent from './_components/TimerComponent'
 import { toast } from 'sonner'
 
 
