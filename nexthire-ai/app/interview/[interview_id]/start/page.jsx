@@ -16,6 +16,7 @@ function StartInterview() {
   const [activeUser, setActiveUser] = useState(false)
   const [interviewStarted, setInterviewStarted] = useState(false); // <-- New
   const [interviewEnded, setInterviewEnded] = useState(false); // <-- New
+  const [conversation, setConversation] = useState();
 
   useEffect(() => {
     interviewInfo && startCall();
@@ -102,25 +103,33 @@ Key Guidelines:
 
   vapi.on("call-end", () => {
     console.log("Call has ended.");
-    toast('Interview Ended...')
+    toast('Interview Ended...');
+    GenerateFeedback();
     setInterviewEnded(true);
   });
 
+  vapi.on("message", (message) => {
+    console.log(message?.conversation);
+    setConversation(message?.conversation);
+  });
 
+  const GenerateFeedback = ()=> {
+    
+  }
 
   return (
     <div className='p-20 lg:pc-48 xl:px-56'>
       <h2 className='font-bold text-xl flex justify-between'>AI Interview Session
         <span className='flex gap-2 items-center'>
           <Timer className='h-5 w-5 text-gray-500' />
-        <TimerComponent start={interviewStarted} stop={interviewEnded} />
+          <TimerComponent start={interviewStarted} stop={interviewEnded} />
         </span>
       </h2>
 
       <div className='grid grid-cols-1 md:grid-cols-2 gap-7 mt-5'>
         <div className='bg-white h-[400px] rounded-lg border flex flex-col gap-3 items-center justify-center'>
           <div className='relative'>
-            {!activeUser&& <span className='absolute inset-0 rounded-full bg-blue-500 opacity-75 animate-ping' />}
+            {!activeUser && <span className='absolute inset-0 rounded-full bg-blue-500 opacity-75 animate-ping' />}
             <Image src={'/ai.png'} alt='ai'
               width={100}
               height={100}
@@ -132,10 +141,10 @@ Key Guidelines:
 
         <div className='bg-white h-[400px] rounded-lg border flex flex-col gap-3 items-center justify-center'>
           <div className='relative'>
-          {activeUser&& <span className='absolute inset-0 rounded-full bg-blue-500 opacity-75 animate-ping' />}
-          <h2 className='text-2xl bg-primary text-white p-3 rounded-full px-5'>
-            {interviewInfo?.userName[0]}
-          </h2>
+            {activeUser && <span className='absolute inset-0 rounded-full bg-blue-500 opacity-75 animate-ping' />}
+            <h2 className='text-2xl bg-primary text-white p-3 rounded-full px-5'>
+              {interviewInfo?.userName[0]}
+            </h2>
           </div>
           <h2>
             {interviewInfo?.userName}
