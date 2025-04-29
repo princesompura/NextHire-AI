@@ -7,6 +7,9 @@ import Vapi from "@vapi-ai/web";
 import AlertConfirmation from './_components/AlertConfirmation'
 import TimerComponent from './_components/TimerComponent'
 import { toast } from 'sonner'
+import axios from 'axios'
+import { supabase } from '@/services/supabaseClient'
+import { useParams, useRouter } from 'next/navigation'
 
 
 
@@ -17,6 +20,8 @@ function StartInterview() {
   const [interviewStarted, setInterviewStarted] = useState(false); // <-- New
   const [interviewEnded, setInterviewEnded] = useState(false); // <-- New
   const [conversation, setConversation] = useState();
+  const { interview_id } = useParams();
+  const router = useRouter();
 
   useEffect(() => {
     interviewInfo && startCall();
@@ -113,8 +118,34 @@ Key Guidelines:
     setConversation(message?.conversation);
   });
 
-  const GenerateFeedback = ()=> {
-    
+  const GenerateFeedback = async () => {
+    const result = await axios.post('/api/ai-feedback', {
+      conversation: conversation
+    })
+
+    console.log(result?.data);
+    const Content = result.data.content;
+    const FINAL_CONTENT = Content.replace('```json', '').replace('```', '');
+    console.log(FINAL_CONTENT);
+
+    // Save to database
+
+    const { data, error } = await supabase
+      .from('interview-feedback')
+      .insert([
+        {
+          userName: interviewInfo?.userName,
+          userEmail: interviewInfo?.userEmail,
+          interview_id: interview_id,
+          feedback: JSON.parse(FINAL_CONTENT),
+          recommended: false
+
+        },
+      ])
+      .select()
+    console.log(data);
+    router.replace('/interview/completed');
+
   }
 
   return (
@@ -153,9 +184,11 @@ Key Guidelines:
       </div>
       <div className='flex items-center gap-5 justify-center mt-7'>
         <Mic className='h-12 w-12 p-3 bg-gray-500 text-white rounded-full cursor-pointer' />
-        <AlertConfirmation stopInterview={() => stopInterview()}>
-          <Phone className='h-12 w-12 p-3 bg-red-500 text-white rounded-full cursor-pointer' />
-        </AlertConfirmation>
+        {/* <AlertConfirmation stopInterview={() => stopInterview()}> */}
+        <Phone className='h-12 w-12 p-3 bg-red-500 text-white rounded-full cursor-pointer'
+          onClick={() => stopInterview()}
+        />
+        {/* </AlertConfirmation> */}
 
       </div>
       <h2 className='text-sm text-gray-400 text-center mt-4'>
