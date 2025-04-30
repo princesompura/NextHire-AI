@@ -149,7 +149,7 @@ Key Guidelines:
   }
 
   return (
-    <div className='p-20 lg:pc-48 xl:px-56'>
+    <div className='p-20 lg:px-48 xl:px-56'>
       <h2 className='font-bold text-xl flex justify-between'>AI Interview Session
         <span className='flex gap-2 items-center'>
           <Timer className='h-5 w-5 text-gray-500' />
@@ -184,11 +184,10 @@ Key Guidelines:
       </div>
       <div className='flex items-center gap-5 justify-center mt-7'>
         <Mic className='h-12 w-12 p-3 bg-gray-500 text-white rounded-full cursor-pointer' />
-        {/* <AlertConfirmation stopInterview={() => stopInterview()}> */}
-        <Phone className='h-12 w-12 p-3 bg-red-500 text-white rounded-full cursor-pointer'
-          onClick={() => stopInterview()}
-        />
-        {/* </AlertConfirmation> */}
+        <AlertConfirmation stopInterview={stopInterview}>
+          <Phone className='h-12 w-12 p-3 bg-red-500 text-white rounded-full cursor-pointer' />
+        </AlertConfirmation>
+
 
       </div>
       <h2 className='text-sm text-gray-400 text-center mt-4'>
