@@ -193,7 +193,7 @@ Key Guidelines:
       <h2 className='text-sm text-gray-400 text-center mt-4'>
         Interview is in Progress...
       </h2>
-      
+
     </div>
   )
 }
