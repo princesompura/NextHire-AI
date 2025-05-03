@@ -11,7 +11,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 
-function AlertConfirmation({ children, stopInterview }) {
+function AlertConfirmation({ children, stopInterview, onCancel }) {
     return (
         <AlertDialog>
             <AlertDialogTrigger>{children}</AlertDialogTrigger>
@@ -23,12 +23,11 @@ function AlertConfirmation({ children, stopInterview }) {
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={()=>stopInterview()}>Continue</AlertDialogAction>
+                    <AlertDialogCancel onClick={onCancel}>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={() => stopInterview()}>Continue</AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>
-
     )
 }
 

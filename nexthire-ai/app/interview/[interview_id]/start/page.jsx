@@ -1,6 +1,6 @@
 "use client"
 import { InterviewDataContext } from '@/context/InterviewDataContext'
-import { Mic, Phone, Timer, TimerIcon } from 'lucide-react'
+import { Mic, Phone, Timer } from 'lucide-react'
 import Image from 'next/image'
 import React, { useContext, useEffect, useState } from 'react'
 import Vapi from "@vapi-ai/web";
@@ -11,15 +11,14 @@ import axios from 'axios'
 import { supabase } from '@/services/supabaseClient'
 import { useParams, useRouter } from 'next/navigation'
 
-
-
 function StartInterview() {
-  const { interviewInfo, setInterviewInfo } = useContext(InterviewDataContext)
+  const { interviewInfo } = useContext(InterviewDataContext)
   const vapi = new Vapi(process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY);
   const [activeUser, setActiveUser] = useState(false)
-  const [interviewStarted, setInterviewStarted] = useState(false); // <-- New
-  const [interviewEnded, setInterviewEnded] = useState(false); // <-- New
+  const [interviewStarted, setInterviewStarted] = useState(false);
+  const [interviewEnded, setInterviewEnded] = useState(false);
   const [conversation, setConversation] = useState();
+  const [loading, setLoading] = useState(false);
   const { interview_id } = useParams();
   const router = useRouter();
 
@@ -28,11 +27,10 @@ function StartInterview() {
   }, [interviewInfo])
 
   const startCall = () => {
-    let questionList;
-    interviewInfo?.interviewData?.questionList.forEach((item, index) => (
-      questionList = item?.question + "," + questionList
-    ));
-
+    let questionList = "";
+    interviewInfo?.interviewData?.questionList.forEach((item) => {
+      questionList += item?.question + ",";
+    });
 
     const assistantOptions = {
       name: "AI Recruiter",
@@ -84,17 +82,27 @@ Key Guidelines:
 
   };
 
-  const stopInterview = () => {
-    vapi.stop()
-    toast('Call Connected...')
-    setInterviewEnded(true);
-  }
+  const stopInterview = async () => {
+    setLoading(true); // Start loading
+    try {
+      vapi.stop(); // End the call
+      toast('Call has been canceled.');
+      setInterviewEnded(true);
+
+      // Generate feedback
+      await GenerateFeedback();
+    } catch (error) {
+      console.error("Error stopping the interview:", error);
+      toast('Failed to stop the interview. Please try again.');
+    } finally {
+      setLoading(false); // Stop loading
+    }
+  };
 
   vapi.on("call-start", () => {
     console.log("Call has started.");
     setInterviewStarted(true);
   });
-
 
   vapi.on("speech-start", () => {
     console.log("Assistant speech has started.");
@@ -106,11 +114,11 @@ Key Guidelines:
     setActiveUser(true);
   });
 
-  vapi.on("call-end", () => {
+  vapi.on("call-end", async () => {
     console.log("Call has ended.");
     toast('Interview Ended...');
-    GenerateFeedback();
     setInterviewEnded(true);
+    await GenerateFeedback();
   });
 
   vapi.on("message", (message) => {
@@ -119,35 +127,41 @@ Key Guidelines:
   });
 
   const GenerateFeedback = async () => {
-    const result = await axios.post('/api/ai-feedback', {
-      conversation: conversation
-    })
+    setLoading(true); // Start loading
+    try {
+      const result = await axios.post('/api/ai-feedback', {
+        conversation: conversation,
+      });
 
-    console.log(result?.data);
-    const Content = result.data.content;
-    const FINAL_CONTENT = Content.replace('```json', '').replace('```', '');
-    console.log(FINAL_CONTENT);
+      console.log(result?.data);
+      const Content = result.data.content;
+      const FINAL_CONTENT = Content.replace('```json', '').replace('```', '');
+      console.log(FINAL_CONTENT);
 
-    // Save to database
+      // Save to database
+      const { data, error } = await supabase
+        .from('interview-feedback')
+        .insert([
+          {
+            userName: interviewInfo?.userName,
+            userEmail: interviewInfo?.userEmail,
+            interview_id: interview_id,
+            feedback: JSON.parse(FINAL_CONTENT),
+            recommended: false,
+          },
+        ])
+        .select();
+      console.log(data);
 
-    const { data, error } = await supabase
-      .from('interview-feedback')
-      .insert([
-        {
-          userName: interviewInfo?.userName,
-          userEmail: interviewInfo?.userEmail,
-          interview_id: interview_id,
-          feedback: JSON.parse(FINAL_CONTENT),
-          recommended: false
-
-        },
-      ])
-      .select()
-    console.log(data);
-    router.replace('/interview/'+interview_id+"/completed");
-    
-
-  }
+      // Redirect to completed page
+      router.replace('/interview/' + interview_id + '/completed');
+    } catch (error) {
+      console.error("Error generating feedback:", error);
+      toast('Failed to generate feedback. Please try again.');
+    } finally {
+      setLoading(false); // Stop loading
+    }
+  };
 
   return (
     <div className='p-20 lg:px-48 xl:px-56'>
@@ -185,18 +199,25 @@ Key Guidelines:
       </div>
 
       <div className='flex items-center gap-5 justify-center mt-7'>
-        <Mic className='h-12 w-12 p-3 bg-gray-500 text-white rounded-full cursor-pointer' />
-        <AlertConfirmation stopInterview={stopInterview}>
-          <Phone className='h-12 w-12 p-3 bg-red-500 text-white rounded-full cursor-pointer' />
+        <Mic className={`h-12 w-12 p-3 ${loading ? 'bg-gray-300 cursor-not-allowed' : 'bg-gray-500 cursor-pointer'} text-white rounded-full`} disabled={loading} />
+        <AlertConfirmation 
+          stopInterview={stopInterview} 
+          onCancel={() => {
+            if (!loading) {
+              vapi.stop(); // End the call
+              toast('Call has been canceled.');
+              setInterviewEnded(true);
+            }
+          }}
+        >
+          <Phone className={`h-12 w-12 p-3 ${loading ? 'bg-red-300 cursor-not-allowed' : 'bg-red-500 cursor-pointer'} text-white rounded-full`} disabled={loading} />
         </AlertConfirmation>
-
       </div>
       <h2 className='text-sm text-gray-400 text-center mt-4'>
         Interview is in Progress...
       </h2>
-
     </div>
   )
 }
 
-export default StartInterview
+export default StartInterview;
