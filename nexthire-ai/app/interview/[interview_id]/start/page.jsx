@@ -144,7 +144,8 @@ Key Guidelines:
       ])
       .select()
     console.log(data);
-    router.replace('/interview/completed');
+    router.replace('/interview/'+interview_id+"/completed");
+    
 
   }
 
