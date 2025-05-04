@@ -64,11 +64,30 @@ function StartInterview() {
 
     vapi.on("message", (message) => {
       console.log("VAPI Message:", message);
+      // Prefer transcript messages for conversation
       if (message?.type === "transcript" && message?.content && message?.role) {
-        setConversation((prev) => [
-          ...prev,
-          { role: message.role, content: message.content },
-        ]);
+        setConversation((prev) => {
+          const newConversation = [
+            ...prev,
+            { role: message.role, content: message.content },
+          ];
+          localStorage.setItem(
+            "interviewConversation",
+            JSON.stringify(newConversation)
+          );
+          return newConversation;
+        });
+      }
+      // Fallback to message.conversation if available
+      else if (message?.conversation) {
+        setConversation((prev) => {
+          const newConversation = message.conversation;
+          localStorage.setItem(
+            "interviewConversation",
+            JSON.stringify(newConversation)
+          );
+          return newConversation;
+        });
       }
     });
 
@@ -77,6 +96,13 @@ function StartInterview() {
         console.log("Assistant requested to end the call.");
         vapi.stop();
       }
+    });
+
+    vapi.on("error", (error) => {
+      console.error("VAPI Error:", error);
+      toast("An error occurred during the interview. Please try again.");
+      setInterviewEnded(true);
+      router.replace(`/interview/${interview_id}/completed`);
     });
 
     return () => {
@@ -266,7 +292,12 @@ Key Guidelines:
         <div className="bg-white h-[400px] rounded-lg border flex flex-col gap-3 items-center justify-center">
           <div className="relative">
             {activeUser && (
-              <span className="absolute inset-0 rounded-full bg-blue-500 opacity-75 animate-ping" />
+              <>
+                <span className="absolute inset-0 rounded-full bg-blue-500 opacity-75 animate-ping" />
+                <span className="absolute top-0 right-0 text-xs text-blue-500">
+                  Mic On
+                </span>
+              </>
             )}
             <h2 className="text-2xl bg-primary text-white p-3 rounded-full px-5">
               {interviewInfo?.userName[0]}
