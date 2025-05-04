@@ -23,6 +23,14 @@ function StartInterview() {
   const router = useRouter();
 
   useEffect(() => {
+    // Validate VAPI public key
+    if (!process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY) {
+      console.error("VAPI public key is missing");
+      toast("Configuration error: VAPI public key is missing.");
+      router.replace(`/interview/${interview_id}/completed`);
+      return;
+    }
+
     if (
       interviewInfo &&
       interviewInfo.interviewData &&
@@ -52,19 +60,29 @@ function StartInterview() {
       toast("Interview Ended...");
       setInterviewEnded(true);
       setTimeout(async () => {
-        if (!conversation || conversation.length === 0) {
+        // Fallback to localStorage if conversation is empty
+        let finalConversation = conversation;
+        if (!finalConversation || finalConversation.length === 0) {
+          const storedConversation = localStorage.getItem("interviewConversation");
+          if (storedConversation) {
+            finalConversation = JSON.parse(storedConversation);
+            console.log("Retrieved conversation from localStorage:", finalConversation);
+          }
+        }
+
+        if (!finalConversation || finalConversation.length === 0) {
           console.error("No conversation data available for feedback generation");
           toast("Cannot generate feedback: No conversation recorded.");
           router.replace(`/interview/${interview_id}/completed`);
           return;
         }
-        await GenerateFeedback();
-      }, 1000);
+        await GenerateFeedback(finalConversation);
+      }, 1500); // Increased delay to 1.5s
     });
 
     vapi.on("message", (message) => {
       console.log("VAPI Message:", message);
-      // Prefer transcript messages for conversation
+      // Handle transcript messages
       if (message?.type === "transcript" && message?.content && message?.role) {
         setConversation((prev) => {
           const newConversation = [
@@ -75,10 +93,11 @@ function StartInterview() {
             "interviewConversation",
             JSON.stringify(newConversation)
           );
+          console.log("Updated conversation (transcript):", newConversation);
           return newConversation;
         });
       }
-      // Fallback to message.conversation if available
+      // Handle conversation array
       else if (message?.conversation) {
         setConversation((prev) => {
           const newConversation = message.conversation;
@@ -86,12 +105,18 @@ function StartInterview() {
             "interviewConversation",
             JSON.stringify(newConversation)
           );
+          console.log("Updated conversation (conversation):", newConversation);
           return newConversation;
         });
+      }
+      // Log unexpected message structures
+      else {
+        console.warn("Unexpected message structure:", message);
       }
     });
 
     vapi.on("function-call", (call) => {
+      console.log("Function call received:", call);
       if (call?.function?.name === "endCall") {
         console.log("Assistant requested to end the call.");
         vapi.stop();
@@ -99,8 +124,12 @@ function StartInterview() {
     });
 
     vapi.on("error", (error) => {
-      console.error("VAPI Error:", error);
-      toast("An error occurred during the interview. Please try again.");
+      console.error("VAPI Error:", error || "Unknown error");
+      toast(
+        `VAPI error: ${
+          error?.message || JSON.stringify(error) || "Unknown error"
+        }. Please try again.`
+      );
       setInterviewEnded(true);
       router.replace(`/interview/${interview_id}/completed`);
     });
@@ -181,40 +210,44 @@ Key Guidelines:
       },
     };
 
+    console.log("Starting VAPI call with options:", assistantOptions);
     vapi.start(assistantOptions).catch((error) => {
       console.error("Failed to start VAPI call:", error);
-      toast("Failed to start interview. Please try again.");
+      toast("Failed to start interview: " + (error?.message || "Unknown error"));
+      setInterviewEnded(true);
+      router.replace(`/interview/${interview_id}/completed`);
     });
   };
 
   const stopInterview = async () => {
     setLoading(true); // Start loading
     try {
-      // Wait briefly to allow pending messages to be processed
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // Wait to allow pending messages to be processed
+      await new Promise((resolve) => setTimeout(resolve, 1500));
       vapi.stop(); // End the call
       toast("Call has been canceled.");
       setInterviewEnded(true);
     } catch (error) {
       console.error("Error stopping the interview:", error);
-      toast("Failed to stop the interview. Please try again.");
+      toast("Failed to stop the interview: " + (error?.message || "Unknown error"));
     } finally {
       setLoading(false); // Stop loading
     }
   };
 
-  const GenerateFeedback = async () => {
+  const GenerateFeedback = async (conversationData) => {
     setLoading(true); // Start loading
     try {
-      if (!conversation || conversation.length === 0) {
-        console.error("No conversation data available for feedback generation");
+      if (!conversationData || conversationData.length === 0) {
+        console.error("No conversation data provided for feedback generation");
         toast("Cannot generate feedback: No conversation recorded.");
         router.replace(`/interview/${interview_id}/completed`);
         return;
       }
 
+      console.log("Sending conversation to API:", conversationData);
       const result = await axios.post("/api/ai-feedback", {
-        conversation: conversation,
+        conversation: conversationData,
       });
 
       console.log("Raw API Response:", result?.data);
@@ -253,10 +286,12 @@ Key Guidelines:
         throw new Error("Failed to save feedback to database.");
       }
 
+      // Clear localStorage after successful save
+      localStorage.removeItem("interviewConversation");
       router.replace(`/interview/${interview_id}/completed`);
     } catch (error) {
       console.error("Error generating feedback:", error);
-      toast("Failed to generate feedback. Please try again.");
+      toast("Failed to generate feedback: " + (error?.message || "Unknown error"));
     } finally {
       setLoading(false); // Stop loading
     }
@@ -318,12 +353,11 @@ Key Guidelines:
           stopInterview={stopInterview}
           onCancel={() => {
             if (!loading) {
-              // Wait briefly to allow pending messages
               setTimeout(() => {
                 vapi.stop();
                 toast("Call has been canceled.");
                 setInterviewEnded(true);
-              }, 1000);
+              }, 1500);
             }
           }}
           activeUser={activeUser}
