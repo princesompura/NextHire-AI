@@ -77,7 +77,7 @@ function StartInterview() {
           return;
         }
         await GenerateFeedback(finalConversation);
-      }, 1500); // Increased delay to 1.5s
+      }, 1500);
     });
 
     vapi.on("message", (message) => {
@@ -290,8 +290,11 @@ Key Guidelines:
       localStorage.removeItem("interviewConversation");
       router.replace(`/interview/${interview_id}/completed`);
     } catch (error) {
-      console.error("Error generating feedback:", error);
-      toast("Failed to generate feedback: " + (error?.message || "Unknown error"));
+      console.error("Error generating feedback:", error, error.response?.data);
+      toast(
+        "Failed to generate feedback: " +
+          (error.response?.data?.error || error.message || "Unknown error")
+      );
     } finally {
       setLoading(false); // Stop loading
     }
