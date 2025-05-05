@@ -125,11 +125,6 @@ function StartInterview() {
 
     vapi.on("error", (error) => {
       console.error("VAPI Error:", error || "Unknown error");
-      toast(
-        `VAPI error: ${
-          error?.message || JSON.stringify(error) || "Unknown error"
-        }. Please try again.`
-      );
       setInterviewEnded(true);
       router.replace(`/interview/${interview_id}/completed`);
     });
