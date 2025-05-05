@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { supabase } from '@/services/supabaseClient';
 import { Camera, Video } from 'lucide-react';
 import React, { useEffect, useState } from 'react'
+import InterviewCard from './InterviewCard';
 
 function LatestInterviewsList() {
   const [interviewList, setInterviewList] = useState([]);
@@ -35,6 +36,14 @@ function LatestInterviewsList() {
           <h2>You don't have any interview created</h2>
           <Button>+ Create New Interview</Button>
         </div>}
+
+        {interviewList&&
+        <div>
+          {interviewList.map((interview, index)=>(
+            <InterviewCard interview={interview} key={index}/>
+          ))}
+        </div>
+        }
     </div>
   )
 }
