@@ -38,7 +38,7 @@ function LatestInterviewsList() {
         </div>}
 
         {interviewList&&
-        <div>
+        <div className='grid grid-cols-2 xl:grid-cols-3 gap-5'>
           {interviewList.map((interview, index)=>(
             <InterviewCard interview={interview} key={index}/>
           ))}
