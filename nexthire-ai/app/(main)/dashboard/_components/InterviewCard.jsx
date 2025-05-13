@@ -15,8 +15,7 @@ function InterviewCard({ interview }) {
     }
 
     const onSend=()=>{
-        window.location.href="mailto:accounts@gmail.com?subject= Interview Link & body=Interview Link:" + url
-
+        window.location.href="mailto:accounts@gmail.com?subject= Interview Link & body=Interview Link:" + url 
     }
 
 
