@@ -19,6 +19,8 @@ function LatestInterviewsList() {
       .from('Interviews')
       .select('*')
       .eq('userEmail', user?.email)
+      .order('id', { ascending: false })
+      .limit(6)
 
     console.log(Interviews);
     setInterviewList(Interviews);
