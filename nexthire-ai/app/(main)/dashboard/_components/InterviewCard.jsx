@@ -29,8 +29,8 @@ function InterviewCard({ interview }) {
             <h2 className='mt-3 font-bold text-lg'>{interview?.jobPosition}</h2>
             <h2 className='mt-2 '>{interview?.interviewDuration}</h2>
             <div className='flex gap-3 mt-2'>
-                <Button variant='outline' className=' bg-blue-100 hover:bg-blue-200 cursor-pointer' onClick={copyLink}> <Copy/> Copy Link</Button>
-                <Button className='bg-blue-100 hover:bg-blue-200 cursor-pointer' onClick={onSend}> <Send className='text-black'/> </Button>
+                <Button variant='outline' className=' bg-blue-200 hover:bg-blue-300 cursor-pointer' onClick={copyLink}> <Copy/> Copy Link</Button>
+                <Button className='bg-blue-200 hover:bg-blue-300 text-black cursor-pointer' onClick={onSend}> <Send className='text-black'/> Mail To</Button>
             </div>
 
         </div>
