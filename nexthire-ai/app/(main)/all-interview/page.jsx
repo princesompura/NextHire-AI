@@ -20,7 +20,7 @@ function AllInterview() {
       .select('*')
       .eq('userEmail', user?.email)
       .order('id', { ascending: false })
-      
+
 
     console.log(Interviews);
     setInterviewList(Interviews);
@@ -39,13 +39,13 @@ function AllInterview() {
           <Button>+ Create New Interview</Button>
         </div>}
 
-        {interviewList&&
+      {interviewList &&
         <div className='grid grid-cols-2 xl:grid-cols-3 gap-5'>
-          {interviewList.map((interview, index)=>(
-            <InterviewCard interview={interview} key={index}/>
+          {interviewList.map((interview, index) => (
+            <InterviewCard interview={interview} key={index} />
           ))}
         </div>
-        }
+      }
     </div>
   )
 }
