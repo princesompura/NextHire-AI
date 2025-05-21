@@ -30,9 +30,12 @@ function InterviewDetailContainer({interviewDetail}) {
 
         <div className='mt-5'>
             <h2 className='font-bold'>Interview Questions</h2>
-            <div className='text-sm leading-6'>
-                {interviewDetail?.questionList.map((item,index)=>(
-                    <h2>{index}.{item?.question}</h2>
+            <div className='mt-2'>
+                {interviewDetail?.questionList.map((item, index) => (
+                    <h2 className='text-sm leading-6' key={index}>
+                        <span className="font-semibold">{index + 1}.</span>
+                        <span className="ml-2">{item?.question}</span>
+                    </h2>
                 ))}
             </div>
         </div>
