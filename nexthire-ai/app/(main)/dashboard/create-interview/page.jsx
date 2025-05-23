@@ -7,6 +7,7 @@ import FormContainer from './_components/FormContainer';
 import QuestionList from './_components/QuestionList';
 import { toast } from 'sonner';
 import InterviewLink from './_components/InterviewLink';
+import { useUser } from '@/app/Provider';
 
 function CreateInterview() {
 
@@ -14,6 +15,7 @@ function CreateInterview() {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState();
   const [interviewId, setInterviewId] = useState();
+  const {user} = useUser();
   const onHandleInputChange = (field, value) => {
     setFormData(prev => ({
       ...prev,
@@ -25,6 +27,11 @@ function CreateInterview() {
   }
 
   const onGoToNext = () => {
+    if(user?.credits<=0)
+    {
+      toast('You do not have enough credits to create an interview. Please purchase credits to continue.');
+      return  ;
+    }
     if (!formData?.jobPosition || !formData.jobDescription || !formData.interviewDuration || !formData.type) {
       toast('Please enter all details.')
       return;

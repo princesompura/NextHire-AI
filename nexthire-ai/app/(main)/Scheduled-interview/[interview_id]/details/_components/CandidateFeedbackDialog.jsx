@@ -64,6 +64,22 @@ function CandidateFeedbackDialog({ candidate }) {
                                     </div>
                                 </div>
                             </div>
+                            <div className='mt-5'>
+                                <h2 className='font-bold'>Performance Summary</h2>
+                                <div className='p-5 bg-secondary rounded-md my-3'>
+                                    {feedback?.summary?.map((summary, index) => (
+                                        <p key={index}>{summary}</p>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className={`p-5 mt-8 flex items-center justify-between rounded-md ${feedback?.recommendation == "RECOMMENDED" ? 'bg-green-100' : 'bg-red-100'}`}>
+                                <div>
+                                    <h2 className={` font-bold ${feedback?.recommendation == "RECOMMENDED" ? 'text-green-700' : 'text-red-700'}`}>Recommendation Message :</h2>
+                                    <p className={`${feedback?.recommendation == "RECOMMENDED" ? 'text-green-600' : 'text-red-500'}`}>{feedback?.recommendationMsg}</p>
+                                </div>
+                                <Button className={`${feedback?.recommendation == "RECOMMENDED" ? 'bg-green-700 hover:bg-green-700' : 'bg-red-700 hover:bg-red-700'}`}>Send Message</Button>
+                            </div>
                         </div>
                     </DialogDescription>
                 </DialogHeader>

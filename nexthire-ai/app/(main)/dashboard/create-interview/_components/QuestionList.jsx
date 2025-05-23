@@ -9,7 +9,7 @@ import { useUser } from '@/app/Provider';
 import { v4 as uuidv4 } from 'uuid';
 
 
-function QuestionList({ formData, onCreateLink  }) {
+function QuestionList({ formData, onCreateLink }) {
     const [loading, setLoading] = useState(true);
     const [questionList, setQuestionList] = useState();
     const { user } = useUser();
@@ -56,10 +56,21 @@ function QuestionList({ formData, onCreateLink  }) {
                 },
             ])
             .select()
+        // Update User Credit
+
+        const userUpdate = await supabase
+            .from('Users')
+            .update({ credits: Number(user?.credits)-1 })
+            .eq('email', user?.email)
+            .select()
+        console.log(userUpdate);
+        
+
+
         setSaveLoading(false);
 
         onCreateLink(interview_id);
-        
+
 
     }
 
@@ -83,7 +94,7 @@ function QuestionList({ formData, onCreateLink  }) {
 
             <div className='flex justify-end mt-10'>
                 <Button onClick={() => onFinish()} disabled={saveLoading}>
-                    {saveLoading&&<Loader2 className='animate-spin'/>}
+                    {saveLoading && <Loader2 className='animate-spin' />}
                     Create Interview Link & Finish</Button>
             </div>
         </div>
