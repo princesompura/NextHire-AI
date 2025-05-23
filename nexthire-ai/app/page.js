@@ -13,7 +13,7 @@ import { motion } from "framer-motion";
 export default function Home() {
   const [user, setUser] = useState(null);
   const router = useRouter();
-  const [currentTime, setCurrentTime] = useState(new Date("2025-05-24T00:51:00+05:30"));
+  const [currentTime, setCurrentTime] = useState(new Date("2025-05-24T00:59:00+05:30"));
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -48,6 +48,16 @@ export default function Home() {
     } else {
       router.push("/auth");
     }
+  };
+
+  const handleGoogleSignIn = async () => {
+    const origin = typeof window !== "undefined" ? window.location.origin : "";
+    await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${origin}/auth/callback`,
+      },
+    });
   };
 
   const mainSectionVariants = {
@@ -220,6 +230,14 @@ export default function Home() {
                 className="bg-blue-600 text-white hover:bg-blue-700 flex items-center px-8 py-4 text-md font-semibold rounded-lg shadow-md"
               >
                 Dashboard
+              </Button>
+            </motion.div>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Button
+                onClick={handleGoogleSignIn}
+                className="bg-white text-gray-900 hover:bg-gray-100 flex items-center px-8 py-4 text-md font-semibold rounded-lg shadow-md"
+              >
+                Log in with Google
               </Button>
             </motion.div>
           </motion.div>
