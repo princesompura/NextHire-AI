@@ -13,9 +13,8 @@ import { motion } from "framer-motion";
 export default function Home() {
   const [user, setUser] = useState(null);
   const router = useRouter();
-  const [currentTime, setCurrentTime] = useState(new Date("2025-05-24T00:18:00+05:30")); // Updated to 12:18 AM IST on May 24, 2025
+  const [currentTime, setCurrentTime] = useState(new Date("2025-05-24T00:51:00+05:30"));
 
-  // Check if the user is signed in on component mount
   useEffect(() => {
     const fetchUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -24,7 +23,6 @@ export default function Home() {
     fetchUser();
   }, []);
 
-  // Update the time every second (optional, can be removed if static time is preferred)
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentTime(new Date());
@@ -32,7 +30,6 @@ export default function Home() {
     return () => clearInterval(timer);
   }, []);
 
-  // Format the date and time
   const formattedDateTime = currentTime.toLocaleString("en-US", {
     weekday: "long",
     year: "numeric",
@@ -45,7 +42,6 @@ export default function Home() {
     timeZoneName: "short",
   });
 
-  // Handle Dashboard button click (used for both header and main section)
   const handleDashboardClick = () => {
     if (user) {
       router.push("/dashboard");
@@ -54,7 +50,6 @@ export default function Home() {
     }
   };
 
-  // Animation variants for the main section elements
   const mainSectionVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: (i) => ({
@@ -64,7 +59,6 @@ export default function Home() {
     }),
   };
 
-  // Animation variants for the benefits and features cards
   const cardVariants = {
     hidden: { opacity: 0, scale: 0.95 },
     visible: (i) => ({
@@ -87,15 +81,14 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      {/* Inline styles for the animated background */}
       <style jsx global>{`
         .animated-background {
           background: linear-gradient(
             135deg,
-            #1e3a8a, /* Deep indigo blue */
-            #6b21a8, /* Rich purple */
-            #0ea5e9, /* Vibrant cyan */
-            #0284c7, /* Bright sky blue */
+            #1e3a8a,
+            #6b21a8,
+            #0ea5e9,
+            #0284c7,
             #1e3a8a
           );
           background-size: 600% 600%;
@@ -105,18 +98,11 @@ export default function Home() {
         }
 
         @keyframes gradientFlow {
-          0% {
-            background-position: 0% 50%;
-          }
-          50% {
-            background-position: 100% 50%;
-          }
-          100% {
-            background-position: 0% 50%;
-          }
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
         }
 
-        /* Subtle overlay to enhance content readability */
         .animated-background::before {
           content: '';
           position: absolute;
@@ -128,22 +114,24 @@ export default function Home() {
           pointer-events: none;
         }
 
-        /* Add text shadow to header elements for readability */
-        header .text-gray-600 {
-          text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
-        }
-
-        /* Ensure the button text is readable */
+        header .text-gray-600,
         header .bg-blue-600 {
           text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
         }
 
-        /* Gradient border for feature cards */
         .gradient-border {
           position: relative;
-          background: white;
+          background: linear-gradient(
+            135deg,
+            rgba(30, 58, 138, 0.8),
+            rgba(107, 33, 168, 0.8),
+            rgba(14, 165, 233, 0.8)
+          );
           border-radius: 12px;
           overflow: hidden;
+          backdrop-filter: blur(8px);
+          -webkit-backdrop-filter: blur(8px);
+          box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
         }
         .gradient-border::before {
           content: '';
@@ -154,13 +142,11 @@ export default function Home() {
           border-radius: 12px;
         }
 
-        /* Ensure content stands out against vibrant background */
         main, section {
           position: relative;
           z-index: 1;
         }
 
-        /* Step number styling */
         .step-number {
           width: 40px;
           height: 40px;
@@ -168,22 +154,20 @@ export default function Home() {
           align-items: center;
           justify-content: center;
           border-radius: 50%;
-          background: #dbeafe; /* Light lavender */
-          color: #1e40af; /* Dark blue */
+          background: #dbeafe;
+          color: #1e40af;
           font-weight: bold;
           margin: 0 auto 1rem;
         }
 
-        /* Footer link hover effect */
         footer a {
           transition: color 0.3s ease;
         }
         footer a:hover {
-          color: #3b82f6; /* Blue hover effect */
+          color: #3b82f6;
         }
       `}</style>
 
-      {/* Header */}
       <header className="flex justify-between items-center px-6 py-4 shadow-sm bg-white/80 backdrop-blur-sm">
         <div className="flex items-center space-x-2">
           <Image src={'/logo.png'} alt="logo" width={200} height={100} className="w-[200px]" />
@@ -201,7 +185,6 @@ export default function Home() {
         </motion.div>
       </header>
 
-      {/* Main Section */}
       <main className="flex flex-col items-center justify-center px-6 py-16 md:px-16 text-center">
         <div className="space-y-6 max-w-2xl">
           <motion.h1
@@ -243,7 +226,6 @@ export default function Home() {
         </div>
       </main>
 
-      {/* Features Section */}
       <section className="px-6 py-16 md:px-16 text-center">
         <motion.h2
           className="text-3xl md:text-4xl font-bold text-white mb-4"
@@ -295,14 +277,14 @@ export default function Home() {
               custom={index}
             >
               <Card className="gradient-border">
-                <CardContent className="pt-6 bg-white rounded-lg">
+                <CardContent className="pt-6 rounded-lg">
                   <div className="flex justify-center mb-4">
                     {feature.icon}
                   </div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                  <h3 className="text-xl font-semibold text-white mb-2">
                     {feature.title}
                   </h3>
-                  <p className="text-gray-600">{feature.description}</p>
+                  <p className="text-gray-200">{feature.description}</p>
                 </CardContent>
               </Card>
             </motion.div>
@@ -310,7 +292,61 @@ export default function Home() {
         </div>
       </section>
 
-      {/* How It Works Section */}
+      <section className="px-6 py-16 md:px-16 text-center">
+        <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+          Streamline Your Hiring Process
+        </h2>
+        <p className="text-gray-200 mb-12">
+          NextHire AI helps you save time and find better candidates with our
+          advanced interview technology.
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {[
+            {
+              icon: <Clock className="w-10 h-10 text-blue-400" />,
+              title: "Save Time",
+              description:
+                "Automate initial screening interviews and focus on final candidates.",
+            },
+            {
+              icon: <Database className="w-10 h-10 text-blue-400" />,
+              title: "Data-Driven Insights",
+              description:
+                "Get detailed analytics and candidate comparisons based on interview responses.",
+            },
+            {
+              icon: <BriefcaseBusiness className="w-10 h-10 text-blue-400" />,
+              title: "Reduce Bias",
+              description:
+                "Standardized interviews help eliminate unconscious bias in the hiring process.",
+            },
+          ].map((benefit, index) => (
+            <motion.div
+              key={benefit.title}
+              variants={cardVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              whileHover="hover"
+              whileTap="tap"
+              custom={index}
+            >
+              <Card className="gradient-border">
+                <CardContent className="pt-6 rounded-lg">
+                  <div className="flex justify-center mb-4">
+                    {benefit.icon}
+                  </div>
+                  <h3 className="text-xl font-semibold text-white mb-2">
+                    {benefit.title}
+                  </h3>
+                  <p className="text-gray-200">{benefit.description}</p>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
       <section className="px-6 py-16 md:px-16 text-center">
         <motion.h2
           className="text-3xl md:text-4xl font-bold text-white mb-4"
@@ -361,12 +397,12 @@ export default function Home() {
               custom={index}
             >
               <Card className="gradient-border">
-                <CardContent className="pt-6 bg-white rounded-lg">
+                <CardContent className="pt-6 rounded-lg">
                   <div className="step-number">{step.number}</div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                  <h3 className="text-xl font-semibold text-white mb-2">
                     {step.title}
                   </h3>
-                  <p className="text-gray-600">{step.description}</p>
+                  <p className="text-gray-200">{step.description}</p>
                 </CardContent>
               </Card>
             </motion.div>
@@ -374,65 +410,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Benefits Section */}
-      <section className="px-6 py-16 md:px-16 text-center">
-        <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-          Streamline Your Hiring Process
-        </h2>
-        <p className="text-gray-200 mb-12">
-          NextHire AI helps you save time and find better candidates with our
-          advanced interview technology.
-        </p>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {[
-            {
-              icon: <Clock className="w-10 h-10 text-blue-400" />,
-              title: "Save Time",
-              description:
-                "Automate initial screening interviews and focus on final candidates.",
-            },
-            {
-              icon: <Database className="w-10 h-10 text-blue-400" />,
-              title: "Data-Driven Insights",
-              description:
-                "Get detailed analytics and candidate comparisons based on interview responses.",
-            },
-            {
-              icon: <BriefcaseBusiness className="w-10 h-10 text-blue-400" />,
-              title: "Reduce Bias",
-              description:
-                "Standardized interviews help eliminate unconscious bias in the hiring process.",
-            },
-          ].map((benefit, index) => (
-            <motion.div
-              key={benefit.title}
-              variants={cardVariants}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              whileHover="hover"
-              whileTap="tap"
-              custom={index}
-            >
-              <Card className="bg-white/90 backdrop-blur-sm">
-                <CardContent className="pt-6">
-                  <div className="flex justify-center mb-4">
-                    {benefit.icon}
-                  </div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                    {benefit.title}
-                  </h3>
-                  <p className="text-gray-600">{benefit.description}</p>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
-        </div>
-      </section>
-
-      
-
-      {/* Call to Action Section */}
       <section className="px-6 py-16 md:px-16 text-center">
         <motion.h2
           className="text-3xl md:text-4xl font-bold text-white mb-4"
@@ -481,7 +458,6 @@ export default function Home() {
         </motion.div>
       </section>
 
-      {/* Footer */}
       <footer className="flex flex-col md:flex-row justify-between items-center px-6 py-4 bg-white/80 backdrop-blur-sm text-gray-600 text-sm">
         <div className="flex items-center space-x-2 mb-2 md:mb-0">
           <Image src={'/logo.png'} alt="logo" width={100} height={50} className="w-[100px]" />
