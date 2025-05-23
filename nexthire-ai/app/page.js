@@ -1,10 +1,5 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import Head from "next/head";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
+<<<<<<< HEAD
 import { Card, CardContent } from "@/components/ui/card";
 import { supabase } from "@/services/supabaseClient";
 import { BriefcaseBusiness, Clock, Database, Sparkles, Bot, FileText } from "lucide-react";
@@ -489,6 +484,17 @@ export default function Home() {
           © 2025 NextHire AI. All rights reserved.
         </div>
       </footer>
+=======
+import Image from "next/image";
+
+export default function Home() {
+  return (
+    <div>
+      <h2>I am Prince Sompura</h2>
+      <Button>
+        APPLY
+      </Button>
+>>>>>>> parent of 876450c (Created Dashboard)
     </div>
   );
 }
