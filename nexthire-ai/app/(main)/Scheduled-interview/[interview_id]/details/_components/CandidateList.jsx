@@ -18,8 +18,8 @@ function CandidateList({ candidateList }) {
                         </div>
                     </div>
                     <div className='flex gap-8 items-center'>
-                       <h2 className='text-green-700'>6/10</h2> 
-                        <CandidateFeedbackDialog />
+                        <h2 className='text-green-700'>6/10</h2>
+                        <CandidateFeedbackDialog candidate={candidate} />
                     </div>
                 </div>
 
