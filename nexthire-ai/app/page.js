@@ -1,20 +1,15 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import Head from "next/head";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { supabase } from "@/services/supabaseClient";
-import { BriefcaseBusiness, Clock, Database, Sparkles, Bot, FileText } from "lucide-react";
+import { BriefcaseBusiness, Clock, Database } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function Home() {
   const [user, setUser] = useState(null);
   const router = useRouter();
-  const [currentTime, setCurrentTime] = useState(new Date("2025-05-24T00:59:00+05:30"));
+  const [currentTime, setCurrentTime] = useState(new Date("2025-05-24T00:00:00+05:30")); // Updated to 12:00 AM IST on May 24, 2025
 
+  // Check if the user is signed in on component mount
   useEffect(() => {
     const fetchUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -23,6 +18,7 @@ export default function Home() {
     fetchUser();
   }, []);
 
+  // Update the time every second (optional, can be removed if static time is preferred)
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentTime(new Date());
@@ -30,6 +26,7 @@ export default function Home() {
     return () => clearInterval(timer);
   }, []);
 
+  // Format the date and time
   const formattedDateTime = currentTime.toLocaleString("en-US", {
     weekday: "long",
     year: "numeric",
@@ -42,6 +39,7 @@ export default function Home() {
     timeZoneName: "short",
   });
 
+  // Handle Dashboard button click (used for both header and main section)
   const handleDashboardClick = () => {
     if (user) {
       router.push("/dashboard");
@@ -50,16 +48,7 @@ export default function Home() {
     }
   };
 
-  const handleGoogleSignIn = async () => {
-    const origin = typeof window !== "undefined" ? window.location.origin : "";
-    await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${origin}/auth/callback`,
-      },
-    });
-  };
-
+  // Animation variants for the main section elements
   const mainSectionVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: (i) => ({
@@ -69,6 +58,7 @@ export default function Home() {
     }),
   };
 
+  // Animation variants for the benefits cards
   const cardVariants = {
     hidden: { opacity: 0, scale: 0.95 },
     visible: (i) => ({
@@ -91,96 +81,47 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
+      {/* Inline styles for the animated background */}
       <style jsx global>{`
         .animated-background {
           background: linear-gradient(
-            135deg,
-            #1e3a8a,
-            #6b21a8,
-            #0ea5e9,
-            #0284c7,
-            #1e3a8a
+            45deg,
+            #e0f2fe, /* Very light icy blue */
+            #dbeafe, /* Very light lavender */
+            #f3e8ff, /* Very light pastel purple */
+            #e0f2fe
           );
-          background-size: 600% 600%;
-          animation: gradientFlow 20s ease-in-out infinite;
-          position: relative;
-          overflow: hidden;
+          background-size: 400% 400%;
+          animation: gradientShift 15s ease infinite;
         }
 
-        @keyframes gradientFlow {
-          0% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-          100% { background-position: 0% 50%; }
+        @keyframes gradientShift {
+          0% {
+            background-position: 0% 50%;
+          }
+          50% {
+            background-position: 100% 50%;
+          }
+          100% {
+            background-position: 0% 50%;
+          }
         }
 
-        .animated-background::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: rgba(255, 255, 255, 0.1);
-          pointer-events: none;
+        /* Add text shadow to header elements for readability */
+        header .text-gray-600 {
+          text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
         }
 
-        header .text-gray-600,
+        /* Ensure the button text is readable */
         header .bg-blue-600 {
-          text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
-        }
-
-        .gradient-border {
-          position: relative;
-          background: linear-gradient(
-            135deg,
-            rgba(30, 58, 138, 0.8),
-            rgba(107, 33, 168, 0.8),
-            rgba(14, 165, 233, 0.8)
-          );
-          border-radius: 12px;
-          overflow: hidden;
-          backdrop-filter: blur(8px);
-          -webkit-backdrop-filter: blur(8px);
-          box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
-        }
-        .gradient-border::before {
-          content: '';
-          position: absolute;
-          inset: -2px;
-          background: linear-gradient(45deg, #3b82f6, #8b5cf6);
-          z-index: -1;
-          border-radius: 12px;
-        }
-
-        main, section {
-          position: relative;
-          z-index: 1;
-        }
-
-        .step-number {
-          width: 40px;
-          height: 40px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          border-radius: 50%;
-          background: #dbeafe;
-          color: #1e40af;
-          font-weight: bold;
-          margin: 0 auto 1rem;
-        }
-
-        footer a {
-          transition: color 0.3s ease;
-        }
-        footer a:hover {
-          color: #3b82f6;
+          text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
         }
       `}</style>
 
-      <header className="flex justify-between items-center px-6 py-4 shadow-sm bg-white/80 backdrop-blur-sm">
+      {/* Header */}
+      <header className="flex justify-between items-center px-6 py-4 shadow-sm">
         <div className="flex items-center space-x-2">
-          <Image src={'/logo.png'} alt="logo" width={200} height={100} className="w-[200px]" />
+          <Image src={'/logo.png'} alt="logo" width={200} height={100} className="w-[200px] " />
         </div>
         <div className="text-gray-600 text-sm md:text-base">
           {formattedDateTime}
@@ -195,10 +136,11 @@ export default function Home() {
         </motion.div>
       </header>
 
+      {/* Main Section */}
       <main className="flex flex-col items-center justify-center px-6 py-16 md:px-16 text-center">
         <div className="space-y-6 max-w-2xl">
           <motion.h1
-            className="text-4xl md:text-5xl font-bold text-white leading-tight"
+            className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight"
             variants={mainSectionVariants}
             initial="hidden"
             animate="visible"
@@ -207,7 +149,7 @@ export default function Home() {
             AI-Powered Interview Assistant for Modern Recruiters
           </motion.h1>
           <motion.p
-            className="text-gray-200 text-lg"
+            className="text-gray-600 text-lg"
             variants={mainSectionVariants}
             initial="hidden"
             animate="visible"
@@ -230,110 +172,38 @@ export default function Home() {
                 className="bg-blue-600 text-white hover:bg-blue-700 flex items-center px-8 py-4 text-md font-semibold rounded-lg shadow-md"
               >
                 Dashboard
-              </Button>
-            </motion.div>
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button
-                onClick={handleGoogleSignIn}
-                className="bg-white text-gray-900 hover:bg-gray-100 flex items-center px-8 py-4 text-md font-semibold rounded-lg shadow-md"
-              >
-                Log in with Google
+                
               </Button>
             </motion.div>
           </motion.div>
         </div>
       </main>
 
+      {/* Benefits Section */}
       <section className="px-6 py-16 md:px-16 text-center">
-        <motion.h2
-          className="text-3xl md:text-4xl font-bold text-white mb-4"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          viewport={{ once: true }}
-        >
-          Revolutionize Hiring with NextHire AI
-        </motion.h2>
-        <motion.p
-          className="text-gray-200 mb-12 max-w-2xl mx-auto"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          viewport={{ once: true }}
-        >
-          Discover cutting-edge features that transform the recruitment process with intelligent automation and actionable insights.
-        </motion.p>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {[
-            {
-              icon: <Sparkles className="w-10 h-10 text-blue-400" />,
-              title: "AI-Generated Questions",
-              description:
-                "Dynamically crafted interview questions tailored to each role, powered by advanced AI to ensure relevance and depth.",
-            },
-            {
-              icon: <Bot className="w-10 h-10 text-blue-400" />,
-              title: "AI-Driven Interviews",
-              description:
-                "Seamless, automated interviews conducted by our AI voice agent, delivering consistent and engaging candidate experiences.",
-            },
-            {
-              icon: <FileText className="w-10 h-10 text-blue-400" />,
-              title: "Comprehensive Reports",
-              description:
-                "Detailed candidate reports with performance metrics and AI-driven recommendations to guide your hiring decisions.",
-            },
-          ].map((feature, index) => (
-            <motion.div
-              key={feature.title}
-              variants={cardVariants}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              whileHover="hover"
-              whileTap="tap"
-              custom={index}
-            >
-              <Card className="gradient-border">
-                <CardContent className="pt-6 rounded-lg">
-                  <div className="flex justify-center mb-4">
-                    {feature.icon}
-                  </div>
-                  <h3 className="text-xl font-semibold text-white mb-2">
-                    {feature.title}
-                  </h3>
-                  <p className="text-gray-200">{feature.description}</p>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
-        </div>
-      </section>
-
-      <section className="px-6 py-16 md:px-16 text-center">
-        <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
           Streamline Your Hiring Process
         </h2>
-        <p className="text-gray-200 mb-12">
+        <p className="text-gray-600 mb-12">
           NextHire AI helps you save time and find better candidates with our
           advanced interview technology.
         </p>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {[
             {
-              icon: <Clock className="w-10 h-10 text-blue-400" />,
+              icon: <Clock className="w-10 h-10 text-blue-600" />,
               title: "Save Time",
               description:
                 "Automate initial screening interviews and focus on final candidates.",
             },
             {
-              icon: <Database className="w-10 h-10 text-blue-400" />,
+              icon: <Database className="w-10 h-10 text-blue-600" />,
               title: "Data-Driven Insights",
               description:
                 "Get detailed analytics and candidate comparisons based on interview responses.",
             },
             {
-              icon: <BriefcaseBusiness className="w-10 h-10 text-blue-400" />,
+              icon: <BriefcaseBusiness className="w-10 h-10 text-blue-600" />,
               title: "Reduce Bias",
               description:
                 "Standardized interviews help eliminate unconscious bias in the hiring process.",
@@ -349,146 +219,21 @@ export default function Home() {
               whileTap="tap"
               custom={index}
             >
-              <Card className="gradient-border">
-                <CardContent className="pt-6 rounded-lg">
+              <Card className="bg-blue-50">
+                <CardContent className="pt-6">
                   <div className="flex justify-center mb-4">
                     {benefit.icon}
                   </div>
-                  <h3 className="text-xl font-semibold text-white mb-2">
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
                     {benefit.title}
                   </h3>
-                  <p className="text-gray-200">{benefit.description}</p>
+                  <p className="text-gray-600">{benefit.description}</p>
                 </CardContent>
               </Card>
             </motion.div>
           ))}
         </div>
       </section>
-
-      <section className="px-6 py-16 md:px-16 text-center">
-        <motion.h2
-          className="text-3xl md:text-4xl font-bold text-white mb-4"
-          variants={mainSectionVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          custom={0}
-        >
-          How NextHire AI Works
-        </motion.h2>
-        <motion.p
-          className="text-gray-200 mb-12 max-w-2xl mx-auto"
-          variants={mainSectionVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          custom={1}
-        >
-          Three simple steps to transform your recruitment process
-        </motion.p>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {[
-            {
-              number: 1,
-              title: "Create Interview",
-              description: "Set up your job requirements and customize interview questions.",
-            },
-            {
-              number: 2,
-              title: "Share with Candidates",
-              description: "Send interview links to candidates to complete at their convenience.",
-            },
-            {
-              number: 3,
-              title: "Review Results",
-              description: "Get AI-analyzed results, transcripts, and candidate comparisons.",
-            },
-          ].map((step, index) => (
-            <motion.div
-              key={step.title}
-              variants={cardVariants}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              whileHover="hover"
-              whileTap="tap"
-              custom={index}
-            >
-              <Card className="gradient-border">
-                <CardContent className="pt-6 rounded-lg">
-                  <div className="step-number">{step.number}</div>
-                  <h3 className="text-xl font-semibold text-white mb-2">
-                    {step.title}
-                  </h3>
-                  <p className="text-gray-200">{step.description}</p>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
-        </div>
-      </section>
-
-      <section className="px-6 py-16 md:px-16 text-center">
-        <motion.h2
-          className="text-3xl md:text-4xl font-bold text-white mb-4"
-          variants={mainSectionVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          custom={0}
-        >
-          Ready to Transform YOUR Hiring Process?
-        </motion.h2>
-        <motion.p
-          className="text-gray-200 mb-8 max-w-2xl mx-auto"
-          variants={mainSectionVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          custom={1}
-        >
-          Join hundreds of companies already using NextHire AI to find the best talent.
-        </motion.p>
-        <motion.div
-          className="flex justify-center space-x-4"
-          variants={mainSectionVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          custom={2}
-        >
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Button
-              onClick={handleDashboardClick}
-              className="bg-blue-600 text-white hover:bg-blue-700 px-6 py-3 text-md font-semibold rounded-lg shadow-md"
-            >
-              Get Started for Free
-            </Button>
-          </motion.div>
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Button
-              onClick={() => router.push("/demo")}
-              className="bg-transparent border border-white text-white hover:bg-white hover:text-gray-900 px-6 py-3 text-md font-semibold rounded-lg shadow-md"
-            >
-              Schedule a Demo
-            </Button>
-          </motion.div>
-        </motion.div>
-      </section>
-
-      <footer className="flex flex-col md:flex-row justify-between items-center px-6 py-4 bg-white/80 backdrop-blur-sm text-gray-600 text-sm">
-        <div className="flex items-center space-x-2 mb-2 md:mb-0">
-          <Image src={'/logo.png'} alt="logo" width={100} height={50} className="w-[100px]" />
-        </div>
-        <div className="flex space-x-4 mb-2 md:mb-0">
-          <a href="/terms" className="text-gray-600">Terms</a>
-          <a href="/privacy" className="text-gray-600">Privacy</a>
-          <a href="/contact" className="text-gray-600">Contact</a>
-        </div>
-        <div>
-          © 2025 NextHire AI. All rights reserved.
-        </div>
-      </footer>
     </div>
   );
 }
