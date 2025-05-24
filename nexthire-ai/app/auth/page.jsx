@@ -6,17 +6,21 @@ import React from "react";
 
 function Login() {
   const signInWithGoogle = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${window.location.origin}/dashboard`,
-      },
-    });
+  const redirectUrl = process.env.NEXT_PUBLIC_HOST_URL
+    ? `${process.env.NEXT_PUBLIC_HOST_URL}/dashboard`
+    : `${window.location.origin}/dashboard`;
 
-    if (error) {
-      console.error("Error signing in with Google:", error.message);
-    }
-  };
+  const { error } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      redirectTo: redirectUrl,
+    },
+  });
+
+  if (error) {
+    console.error("Error signing in with Google:", error.message);
+  }
+};
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">
