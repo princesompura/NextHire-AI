@@ -66,7 +66,7 @@ Ensure you have the following installed on your machine:
     # or
     yarn install
     ```
-3.  **Install dependencies:**
+3.  **Running the Development Server:**
     ```bash
     npm run dev
     # or
