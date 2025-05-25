@@ -4,7 +4,7 @@
 
 ## Overview
 
-**NextHire-AI** is a cutting-edge full-stack web application that pioneers the use of AI for recruitment. It's built as an **AI Recruiter Voice Agent** capable of dynamically creating and conducting job interviews entirely through voice. This project is perfect for those interested in HR tech, recruitment automation, and leveraging AI for interactive solutions. It transforms the traditional interview process into an efficient, scalable, and engaging experience.
+**NextHire-AI** is a cutting-edge full-stack web application that pioneers the use of AI for recruitment. It's built as an **AI Recruiter Voice Agent** capable of dynamically creating and conducting job interviews entirely through voice.
 
 ---
 
