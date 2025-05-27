@@ -54,7 +54,7 @@ export default function Home() {
         </div>
         {user ? (
           <span className="text-lg font-semibold text-gray-900">
-            Welcome Back Bro!
+            Welcome Back, {user?.user_metadata?.name || user?.email || "Bro"}!
           </span>
         ) : (
           <Button
@@ -229,7 +229,15 @@ export default function Home() {
       {/* Footer */}
       <footer className="px-6 py-4 bg-gray-50 border-t border-gray-200 text-center text-gray-600">
         <div className="flex justify-between items-center max-w-6xl mx-auto">
-          
+          <div className="flex items-center space-x-2">
+            <Image
+              src="/logo.png"
+              alt="logo"
+              width={100}
+              height={50}
+              className="w-[100px]"
+            />
+          </div>
           <div className="space-x-4">
             <a href="/terms" className="hover:underline">
               Terms
