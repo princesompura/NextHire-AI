@@ -156,6 +156,94 @@ export default function Home() {
           </Card>
         </div>
       </section>
+
+      {/* How NextHire AI Works Section */}
+      <section className="px-6 py-16 md:px-16 text-center bg-gray-50">
+        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          How NextHire AI Works
+        </h2>
+        <p className="text-gray-600 mb-12">
+          Three simple steps to transform your recruitment process
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div>
+            <div className="flex justify-center mb-4">
+              <span className="w-10 h-10 flex items-center justify-center rounded-full bg-blue-100 text-blue-600 font-semibold">
+                1
+              </span>
+            </div>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              Create Interview
+            </h3>
+            <p className="text-gray-600">
+              Set up your job requirements and customize interview questions.
+            </p>
+          </div>
+          <div>
+            <div className="flex justify-center mb-4">
+              <span className="w-10 h-10 flex items-center justify-center rounded-full bg-blue-100 text-blue-600 font-semibold">
+                2
+              </span>
+            </div>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              Share with Candidates
+            </h3>
+            <p className="text-gray-600">
+              Send interview links to candidates to complete at their convenience.
+            </p>
+          </div>
+          <div>
+            <div className="flex justify-center mb-4">
+              <span className="w-10 h-10 flex items-center justify-center rounded-full bg-blue-100 text-blue-600 font-semibold">
+                3
+              </span>
+            </div>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              Review Results
+            </h3>
+            <p className="text-gray-600">
+              Get AI-analyzed results, transcripts, and candidate comparisons.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* New Call-to-Action Section */}
+      <section className="px-6 py-16 md:px-16 text-center bg-blue-50">
+        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          Transform Your Hiring with NextHire AI
+        </h2>
+        <p className="text-gray-600 text-lg max-w-2xl mx-auto mb-8">
+          Experience the future of recruitment with NextHire AI. Our AI-powered
+          platform streamlines your hiring process, saving you time and helping
+          you find the best talent effortlessly.
+        </p>
+        <Button
+          onClick={handleDashboardClick}
+          className="bg-blue-600 text-white hover:bg-blue-700 text-lg px-6 py-3"
+        >
+          Get Started with NextHire AI
+        </Button>
+      </section>
+
+      {/* Footer */}
+      <footer className="px-6 py-4 bg-gray-50 border-t border-gray-200 text-center text-gray-600">
+        <div className="flex justify-between items-center max-w-6xl mx-auto">
+          
+          <div className="space-x-4">
+            <a href="/terms" className="hover:underline">
+              Terms
+            </a>
+            <a href="/privacy" className="hover:underline">
+              Privacy
+            </a>
+            <a href="/contact" className="hover:underline">
+              Contact
+            </a>
+          </div>
+          <p>© 2025 NextHire AI. All rights reserved.</p>
+        </div>
+      </footer>
     </div>
   );
 }
