@@ -215,7 +215,6 @@ export default function Settings() {
             </Card>
 
             {/* Account Actions */}
-            {/* Account Actions */}
             <Card>
                 <CardHeader>
                     <CardTitle>Account Actions</CardTitle>
@@ -228,37 +227,39 @@ export default function Settings() {
                         >
                             Sign Out
                         </Button>
-                        <Dialog>
-                            <DialogTrigger asChild>
-                                <Button variant="destructive" className="mt-4">
-                                    Delete Account
-                                </Button>
-                            </DialogTrigger>
-                            <DialogContent>
-                                <DialogHeader>
-                                    <DialogTitle>Are you sure?</DialogTitle>
-                                </DialogHeader>
-                                <p className="text-gray-600">
-                                    This action cannot be undone. All your interviews, feedback, and account data will be permanently deleted.
-                                </p>
-                                <DialogFooter>
-                                    <Button
-                                        variant="outline"
-                                        onClick={() => setDeleting(false)}
-                                    >
-                                        Cancel
-                                    </Button>
-                                    <Button
-                                        variant="destructive"
-                                        onClick={handleDeleteAccount}
-                                        disabled={deleting}
-                                    >
-                                        {deleting ? <Loader2 className="animate-spin mr-2" /> : null}
+                        <div className="mt-4">
+                            <Dialog>
+                                <DialogTrigger asChild>
+                                    <Button variant="destructive">
                                         Delete Account
                                     </Button>
-                                </DialogFooter>
-                            </DialogContent>
-                        </Dialog>
+                                </DialogTrigger>
+                                <DialogContent>
+                                    <DialogHeader>
+                                        <DialogTitle>Are you sure?</DialogTitle>
+                                    </DialogHeader>
+                                    <p className="text-gray-600">
+                                        This action cannot be undone. All your interviews, feedback, and account data will be permanently deleted.
+                                    </p>
+                                    <DialogFooter>
+                                        <Button
+                                            variant="outline"
+                                            onClick={() => setDeleting(false)}
+                                        >
+                                            Cancel
+                                        </Button>
+                                        <Button
+                                            variant="destructive"
+                                            onClick={handleDeleteAccount}
+                                            disabled={deleting}
+                                        >
+                                            {deleting ? <Loader2 className="animate-spin mr-2" /> : null}
+                                            Delete Account
+                                        </Button>
+                                    </DialogFooter>
+                                </DialogContent>
+                            </Dialog>
+                        </div>
                     </div>
                 </CardContent>
             </Card>
