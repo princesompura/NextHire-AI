@@ -26,6 +26,7 @@ export async function POST(req) {
       key_secret: process.env.RAZORPAY_KEY_SECRET,
     });
 
+    
     // Create Razorpay order
     const order = await razorpay.orders.create({
       amount: amount * 100, // Amount in paise (e.g., ₹500 = 50000 paise)
