@@ -12,6 +12,14 @@ export async function POST(req) {
       });
     }
 
+    // Check environment variables
+    if (!process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
+      console.error("Razorpay environment variables are missing");
+      return new Response(JSON.stringify({ error: "Server configuration error: Razorpay keys are missing" }), {
+        status: 500,
+      });
+    }
+
     // Initialize Razorpay instance
     const razorpay = new Razorpay({
       key_id: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
@@ -28,7 +36,7 @@ export async function POST(req) {
 
     return new Response(JSON.stringify({ orderId: order.id }), { status: 200 });
   } catch (error) {
-    console.error("Error creating Razorpay order:", error);
-    return new Response(JSON.stringify({ error: "Failed to create order" }), { status: 500 });
+    console.error("Error creating Razorpay order:", error.message, error.stack);
+    return new Response(JSON.stringify({ error: error.message || "Failed to create order" }), { status: 500 });
   }
 }

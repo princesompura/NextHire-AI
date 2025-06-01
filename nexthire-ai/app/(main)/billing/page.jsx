@@ -72,7 +72,9 @@ export default function Billing() {
                 email: user.email,
             });
 
-            const { orderId } = response.data;
+            const { orderId, error } = response.data;
+            if (error) throw new Error(error); // Throw detailed error from API
+
             if (!orderId) throw new Error("Failed to create order");
 
             // Step 2: Initialize Razorpay
@@ -98,7 +100,7 @@ export default function Billing() {
                         setCredits(verifyData.newCredits);
                         toast.success(`Successfully purchased ${pkg.credits} credits!`);
                     } else {
-                        toast.error("Payment verification failed");
+                        toast.error(verifyData.error || "Payment verification failed");
                     }
                 },
                 prefill: {
